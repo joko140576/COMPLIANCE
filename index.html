@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Evaluasi Compliance COU</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body { background:#f4f6f9; }
+.card { border-radius:12px; }
+th {
+    background:#0d6efd;
+    color:white;
+    text-align:center;
+    vertical-align:middle;
+    font-size:13px;
+}
+td { font-size:13px; vertical-align:middle; }
+.summary { font-weight:bold; }
+.evidence-img{
+    width: 120px;
+    height: 90px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    object-fit: cover;
+    display: none;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<div class="container-fluid my-4">
+<div class="card shadow">
+<div class="card-body">
+
+<h4 class="text-center">EVALUASI COMPLIANCE COU</h4>
+
+<!-- HEADER INPUT -->
+<div class="col-md-3">
+    <label class="form-label">Nama COU</label>
+    <input class="form-control" id="cou">
+</div>
+
+<div class="col-md-3">
+    <label class="form-label">Penilai</label>
+    <input class="form-control" id="penilai">
+</div>
+
+<div class="col-md-3">
+    <label class="form-label">Tanggal Audit</label>
+    <input type="date" class="form-control" id="tanggal">
+</div>
+
+<div class="col-md-3">
+    <label class="form-label">Quartal</label>
+    <select class="form-select" id="quartal">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+    </select>
+</div>
+
+
+<!-- ===================== TEMA 1 ===================== -->
+<h6 class="bg-secondary text-white p-2">
+1. RUANG BONGKAR MUAT (LOADING LUAR)
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t1"></tbody>
+</table>
+</div>
+
+<div class="row mb-4">
+<div class="col-md-4 summary">Total Y: <span id="y1">0</span></div>
+<div class="col-md-4 summary">Total N: <span id="n1">0</span></div>
+<div class="col-md-4 summary">Kepatuhan: <span id="p1">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 2 ===================== -->
+<h6 class="bg-secondary text-white p-2">
+2. RUANG SERAH TERIMA KASET (LOADING DALAM)
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t2"></tbody>
+</table>
+</div>
+
+<div class="row">
+<div class="col-md-4 summary">Total Y: <span id="y2">0</span></div>
+<div class="col-md-4 summary">Total N: <span id="n2">0</span></div>
+<div class="col-md-4 summary">Kepatuhan: <span id="p2">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 3 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+3. RUANG PEMROSESAN
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t3"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+<div class="col-md-4 summary">Total Y: <span id="y3">0</span></div>
+<div class="col-md-4 summary">Total N: <span id="n3">0</span></div>
+<div class="col-md-4 summary">Kepatuhan: <span id="p3">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 4 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+4. RUANG KHASANAH
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t4"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+<div class="col-md-4 summary">Total Y: <span id="y4">0</span></div>
+<div class="col-md-4 summary">Total N: <span id="n4">0</span></div>
+<div class="col-md-4 summary">Kepatuhan: <span id="p4">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 5 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+5. RUANG GELEDAH
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t5"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+<div class="col-md-4 summary">Total Y: <span id="y5">0</span></div>
+<div class="col-md-4 summary">Total N: <span id="n5">0</span></div>
+<div class="col-md-4 summary">Kepatuhan: <span id="p5">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 6 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+6. RUANG PENYIMPANAN KUNCI TOMBAK
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t6"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-4 summary">Total Y: <span id="y6">0</span></div>
+  <div class="col-md-4 summary">Total N: <span id="n6">0</span></div>
+  <div class="col-md-4 summary">Kepatuhan: <span id="p6">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 7 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+7. AREA LINGKUNGAN GEDUNG KANTOR
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal-hal yang Diobservasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t7"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-4 summary">Total Y: <span id="y7">0</span></div>
+  <div class="col-md-4 summary">Total N: <span id="n7">0</span></div>
+  <div class="col-md-4 summary">Kepatuhan: <span id="p7">0%</span></div>
+</div>
+
+<!-- ===================== TEMA 8 ===================== -->
+<h6 class="bg-secondary text-white p-2 mt-4">
+8. TITIK KAMERA CCTV ONLINE
+</h6>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Hal – Hal Yang Di Observasi</th>
+<th>Comply Y/N</th>
+<th>Evidence</th>
+<th>Keterangan</th>
+<th>Penyebab</th>
+<th>Tindak Lanjut COU</th>
+<th>Rekomendasi</th>
+<th>Referensi SOP/PP/IK</th>
+</tr>
+</thead>
+<tbody id="t8"></tbody>
+</table>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-4 summary">Total Y: <span id="y8">0</span></div>
+  <div class="col-md-4 summary">Total N: <span id="n8">0</span></div>
+  <div class="col-md-4 summary">Kepatuhan: <span id="p8">0%</span></div>
+</div>
+
+<!-- ===================== SUMMARY ===================== -->
+<h5 class="bg-primary text-white p-2 mt-5 text-center">
+SUMMARY EVALUASI COMPLIANCE
+</h5>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>No</th>
+<th>Kategori</th>
+<th>Jumlah Temuan</th>
+<th>Score Frekuensi</th>
+<th>Score Risiko</th>
+<th>Total Nilai</th>
+<th>Tingkat Risiko Kepatuhan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td><td>Ruang Bongkar Muat</td>
+<td id="tm1">0</td><td id="sf1">0</td><td id="sr1">0</td><td id="tn1">0</td><td id="tk1">-</td>
+</tr>
+<tr>
+<td>2</td><td>Ruang Serah Terima Kaset</td>
+<td id="tm2">0</td><td id="sf2">0</td><td id="sr2">0</td><td id="tn2">0</td><td id="tk2">-</td>
+</tr>
+<tr>
+<td>3</td><td>Ruang Pemrosesan</td>
+<td id="tm3">0</td><td id="sf3">0</td><td id="sr3">0</td><td id="tn3">0</td><td id="tk3">-</td>
+</tr>
+<tr>
+<td>4</td><td>Ruang Khasanah</td>
+<td id="tm4">0</td><td id="sf4">0</td><td id="sr4">0</td><td id="tn4">0</td><td id="tk4">-</td>
+</tr>
+<tr>
+<td>5</td><td>Ruang Geledah</td>
+<td id="tm5">0</td><td id="sf5">0</td><td id="sr5">0</td><td id="tn5">0</td><td id="tk5">-</td>
+</tr>
+<tr>
+<td>6</td><td>Ruang Penyimpanan Kunci Tombak</td>
+<td id="tm6">0</td><td id="sf6">0</td><td id="sr6">0</td><td id="tn6">0</td><td id="tk6">-</td>
+</tr>
+<tr>
+<td>7</td><td>Area Lingkungan Gedung Kantor</td>
+<td id="tm7">0</td><td id="sf7">0</td><td id="sr7">0</td><td id="tn7">0</td><td id="tk7">-</td>
+</tr>
+<tr>
+<td>8</td><td>Titik Kamera CCTV Online</td>
+<td id="tm8">0</td><td id="sf8">0</td><td id="sr8">0</td><td id="tn8">0</td><td id="tk8">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<button class="btn btn-primary" onclick="kirimData()">Submit Audit</button>
+
+</div>
+</div>
+</div>
+
+<script>
+const tema1 = [
+"Kamera Ruang Bongkar Muat",
+"Penggunaan TPP",
+"Kerapihan dan Kebersihan Ruang Bongkar Muat",
+"Kondisi Pintu Air Bagian Luar",
+"Kunci Gembok Brankas Kendaraan (Dual Kontrol)",
+"Penggunaan Trolley",
+"Penggunaan Tas Kaset / Karung"
+];
+
+const tema2 = [
+"Kamera Ruang Bongkar Muat Bagian Dalam",
+"Penggunaan Seragam Khusus Cashier",
+"Kerapihan & Kebersihan Ruang Serah Terima Kaset",
+"Kondisi Pintu Air Bagian Dalam",
+"Penggunaan Trolley",
+"Penggunaan Tas Kaset / Karung",
+"Kesesuaian Pemakaian Seragam Khusus Cashier"
+];
+
+
+
+const tema3 = [
+"Kamera Ruang Pemrosesan",
+"Kebersihan (Sterilisasi Ruang Pemrosesan)",
+"Penggunaan Palet / Container",
+"Papan Tulis (Pencatatan identitas sortir, perhitungan SR dan pengisian)",
+"Perhitungan sebelum uang masuk ke kaset ATM/CRM",
+"Komputer Cashier / Scanner Barcode",
+"Penggunaan Tas Kaset / Karung",
+"Pengecekan Segel Kaset ATM (Scan Segel)",
+"Penggunaan Seragam Khusus Cashier (Resleting Belakang)",
+"Larangan membawa dompet, perhiasan dan jam tangan",
+"Amplop divert menggunakan plastik transparan warna putih",
+"Penyusunan kaset ATM lebih dari 4 kaset"
+];
+
+
+const tema4 = [
+"Kamera Ruang Khasanah",
+"Penggunaan Seragam Khusus Cashier (Resleting Belakang)",
+"Kerapihan / Kebersihan (Sterilisasi Ruang Khasanah)",
+"Kunci Tralis disimpan oleh Cashier",
+"Kunci Tombak Brankas Penyimpanan Uang disimpan oleh Manager / Asst. Manager",
+"Buku Logbook Masuk ke Ruang Khasanah",
+"Penempatan uang (valet / container)",
+"Nama Bank pada Brankas",
+"Kesesuaian Pemakaian Seragam Khusus Cashier",
+"Kunci pintu kluis disimpan oleh Manager / Asst. Manager"
+];
+
+
+const tema5 = [
+"Kamera Ruang Geledah",
+"Kerapihan / Kebersihan (Sterilisasi Ruang Geledah)",
+"Buku Logbook Masuk ke Ruang Pemrosesan",
+"Penggeledahan satu per satu terhadap petugas yang keluar dari ruang steril",
+"Penggeledahan satu per satu terhadap petugas yang masuk ke ruang steril",
+"Pengecekan / penggeledahan terhadap benda yang keluar dari ruang steril",
+"Menggunakan Sandal Khusus Cashier",
+"Penggeledahan secara detail",
+"Pintu Masuk Ruang Geledah (Tertutup / Terbuka)",
+"Pintu Masuk Ruang Pemrosesan (Tertutup / Terbuka)",
+"Kerapihan Petugas",
+"Mengeluarkan / memasukkan fisik uang"
+];
+
+
+const tema6 = [
+  "Kamera Ruang Kunci Tombak",
+  "Penggunaan TPP",
+  "Kerapihan / Kebersihan (Sterilisasi Ruang Serah Terima Kaset)",
+  "Serah Terima Kunci Tombak (Scanning Barcode)",
+  "Berdasarkan Surat Tugas Pengisian Kas ATM/CRM (Restocking)",
+  "Berdasarkan Surat Tugas Perbaikan Mesin ATM/CRM (FLM)",
+  "Dual kontrol masuk ke ruang penyimpanan kunci tombak (Manager / Asst & Staf Administrasi Perencana)",
+  "Pintu Masuk ke Ruang Penyimpanan Kunci Tombak (Tertutup / Terbuka)"
+];
+
+const tema7 = [
+  "Kamera area lingkungan dalam gedung kantor",
+  "Penggunaan TPP",
+  "Kebersihan Lingkungan Gedung Kantor",
+  "Penggeledahan karyawan keluar dan masuk Gedung Kantor",
+  "Pintu Gerbang Masuk Gedung Kantor (Terbuka / Tertutup)",
+  "Ruang Pimpinan",
+  "Ruang Staf Administrasi",
+  "Pengecekan Kendaraan Operasional (Checklist Kendaraan)",
+  "Buku Register Mutasi Security",
+  "Penggeledahan Kendaraan Keluar dan Masuk Gedung Kantor"
+];
+
+
+const tema8 = [
+  "Kamera loading luar",
+  "Kamera loading dalam",
+  "Kamera yang menghadap pintu depan ruang brankas",
+  "Kamera mengarah ke pintu dalam ruang brankas",
+  "Kamera ruang brankas",
+  "Kamera ruang sortir",
+  "Kamera ruang pengisian dan perhitungan",
+  "Kamera ruang kaset",
+  "Kamera yang menghadap pintu geledah",
+  "Kamera ruang geledah",
+  "Kamera yang menghadap pintu geledah dengan ruang kerja admin",
+  "Kamera yang menghadap pintu ruang kunci",
+  "Kamera yang menghadap pintu kunci tombak",
+  "Kamera yang menghadap ke ruang pimpinan",
+  "Kamera halaman depan kantor",
+  "Kamera depan gerbang kantor"
+];
+
+
+function buatTabel(data, id, idx){
+    const tb = document.getElementById(id);
+    data.forEach((d,i)=>{
+        tb.innerHTML += `
+        <tr>
+            <td>${i+1}</td>
+            <td>${d}</td>
+            <td>
+                <select class="form-select c${idx}" onchange="hitung(${idx})">
+                    <option value=""></option>
+                    <option>Y</option>
+                    <option>N</option>
+                </select>
+            </td>
+            <td class="text-center">
+                <input type="file" class="form-control mb-1" accept="image/*"
+                       onchange="previewImg(this)">
+                <img class="evidence-img">
+            </td>
+
+            <td><textarea class="form-control"></textarea></td>
+            <td><textarea class="form-control"></textarea></td>
+            <td><textarea class="form-control"></textarea></td>
+            <td><textarea class="form-control"></textarea></td>
+            <td><textarea class="form-control"></textarea></td>
+        </tr>`;
+    });
+}
+
+
+
+function previewImg(input){
+    const img = input.nextElementSibling;
+    if(input.files && input.files[0]){
+        img.src = URL.createObjectURL(input.files[0]);
+        img.style.display = "block";
+    }
+}
+
+
+function hitung(idx){
+    let y=0,n=0;
+    document.querySelectorAll('.c'+idx).forEach(e=>{
+        if(e.value==="Y") y++;
+        if(e.value==="N") n++;
+    });
+    let t=y+n;
+    let p=t?Math.round(y/t*100):0;
+    document.getElementById("y"+idx).innerText=y;
+    document.getElementById("n"+idx).innerText=n;
+    document.getElementById("p"+idx).innerText=p+"%";
+    hitungSummary(); // <-- tambahan
+
+}
+
+buatTabel(tema1,"t1",1);
+buatTabel(tema2,"t2",2);
+buatTabel(tema3,"t3",3);
+buatTabel(tema4,"t4",4);
+buatTabel(tema5,"t5",5);
+buatTabel(tema6,"t6",6);
+buatTabel(tema7,"t7",7);
+buatTabel(tema8,"t8",8);
+
+
+function hitungSummary(){
+    for(let i=1;i<=8;i++){
+        let n = parseInt(document.getElementById("n"+i).innerText || 0);
+
+        // aturan audit
+        let jumlahTemuan = n;
+        let scoreFrekuensi = n > 0 ? 1 : 0;
+        let scoreRisiko = scoreFrekuensi * 2;
+        let totalNilai = scoreRisiko;
+
+        let tingkat = "Sangat Rendah";
+        if(n >= 1 && n < 3) tingkat = "Rendah";
+        if(n >= 3 && n < 5) tingkat = "Sedang";
+        if(n >= 5) tingkat = "Tinggi";
+
+        document.getElementById("tm"+i).innerText = jumlahTemuan;
+        document.getElementById("sf"+i).innerText = scoreFrekuensi;
+        document.getElementById("sr"+i).innerText = scoreRisiko;
+        document.getElementById("tn"+i).innerText = totalNilai;
+        document.getElementById("tk"+i).innerText = tingkat;
+    }
+}
+
+
+function kirimData() {
+
+  let payload = {
+    cou: document.getElementById("cou").value,
+    penilai: document.getElementById("penilai").value,
+    tanggal: document.getElementById("tanggal").value,
+    quartal: document.getElementById("quartal").value,
+    tema: [],
+    summary: []
+  };
+
+  /* ==========================
+     KIRIM DATA DETAIL (TEMA)
+     ========================== */
+  for (let i = 1; i <= 8; i++) {
+    document.querySelectorAll("#t" + i + " tr").forEach(row => {
+      let comply = row.querySelector("select")?.value;
+      if (!comply) return;
+
+      payload.tema.push({
+        tema: i,
+        parameter: row.children[1].innerText,
+        comply: comply,
+        keterangan: row.children[4].querySelector("textarea").value,
+        penyebab: row.children[5].querySelector("textarea").value,
+        tindak: row.children[6].querySelector("textarea").value,
+        rekomendasi: row.children[7].querySelector("textarea").value,
+        sop: row.children[8].querySelector("textarea").value
+      });
+    });
+  }
+
+  /* ==========================
+     KIRIM SUMMARY
+     ========================== */
+  for (let i = 1; i <= 8; i++) {
+    payload.summary.push({
+      tema: i,
+      temuan: document.getElementById("tm" + i).innerText,
+      frekuensi: document.getElementById("sf" + i).innerText,
+      risiko: document.getElementById("sr" + i).innerText,
+      total: document.getElementById("tn" + i).innerText,
+      tingkat: document.getElementById("tk" + i).innerText
+    });
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbzGPOY-E3TKNp1P70tfa91bwm8tpEOpCrf0Np0l60BwQOGn1UWGMoTUw7AiVTjr9GdnGg/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.text())
+  .then(r => alert("✅ DATA & SUMMARY berhasil disimpan"))
+  .catch(e => alert("❌ Gagal kirim data"));
+}
+
+
+
+
+</script>
+
+</body>
+</html>
+
