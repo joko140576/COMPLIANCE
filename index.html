@@ -623,21 +623,22 @@ function ambilSummary(){
 }
 
 
+
 /* ==========================
    KIRIM KE GOOGLE SHEET
 ========================== */
-let isSubmitting = false;
-function kirimData(){
 
-  // ⛔ cegah klik berulang
-  if(isSubmitting) return;
-  isSubmitting = true;
+window.isSubmitting = false;
+
+window.kirimData = function () {
+
+  if (window.isSubmitting) return;
+  window.isSubmitting = true;
 
   const btn = document.getElementById("btnSubmit");
   const btnText = document.getElementById("btnText");
   const btnLoading = document.getElementById("btnLoading");
 
-  // UI loading
   btn.disabled = true;
   btnText.innerText = "MENGIRIM DATA...";
   btnLoading.classList.remove("d-none");
@@ -665,29 +666,28 @@ function kirimData(){
 
   fetch("https://script.google.com/macros/s/AKfycbxMEv-rj-jhjnf8-MJnJbDAZBhA5Wwx1UZDdou5ZbrUO3Iik7sfFCygZVhbJcynMmqAdQ/exec", {
     method: "POST",
-    body: body
+    body
   })
-  .then(res => res.text())
-  .then(res => {
+  .then(r => r.text())
+  .then(r => {
     alert("✅ DATA BERHASIL DISIMPAN");
-    console.log(res);
+    console.log(r);
   })
   .catch(err => {
     alert("❌ GAGAL KIRIM DATA");
     console.error(err);
   })
   .finally(() => {
-    // 🔓 buka lagi kalau mau submit ulang
-    isSubmitting = false;
+    window.isSubmitting = false;
     btn.disabled = false;
     btnText.innerText = "SUBMIT EVALUASI";
     btnLoading.classList.add("d-none");
   });
-}
+};
 
     
 </script>
-<script src="script.js"></script>    
+
 </body>
 </html>
 
