@@ -632,7 +632,6 @@ function kirimData(){
     penilai: document.getElementById("penilai").value,
     tanggal: document.getElementById("tanggal").value,
     quartal: document.getElementById("quartal").value,
-
     tema: [
       ...ambilDataTema(1,"Ruang Bongkar Muat"),
       ...ambilDataTema(2,"Ruang Serah Terima Kaset"),
@@ -643,17 +642,15 @@ function kirimData(){
       ...ambilDataTema(7,"Area Lingkungan Gedung"),
       ...ambilDataTema(8,"Titik Kamera CCTV")
     ],
-
     summary: ambilSummary()
   };
 
+  const body = new URLSearchParams();
+  body.append("data", JSON.stringify(payload));
+
   fetch("https://script.google.com/macros/s/AKfycbwUMEkKTEalz75-digTH0RwN-P9KTHMjr4bvT7sX9oyfwl6T54wqV5re3XkGbsF7zZa6A/exec", {
     method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+    body: body
   })
   .then(res => res.text())
   .then(res => {
@@ -665,11 +662,14 @@ function kirimData(){
     console.error(err);
   });
 }
+
+
+
+
+
+    
 </script>
-
-
-
-
+    
 </body>
 </html>
 
