@@ -628,20 +628,28 @@ function ambilSummary(){
    KIRIM KE GOOGLE SHEET
 ========================== */
 
-window.isSubmitting = false;
+let isSubmitting = false;
 
-window.kirimData = function () {
+function kirimData(){
 
-  if (window.isSubmitting) return;
-  window.isSubmitting = true;
+  // ⛔ cegah klik berulang
+  if (isSubmitting) return;
+  isSubmitting = true;
 
   const btn = document.getElementById("btnSubmit");
   const btnText = document.getElementById("btnText");
   const btnLoading = document.getElementById("btnLoading");
 
-  btn.disabled = true;
-  btnText.innerText = "MENGIRIM DATA...";
-  btnLoading.classList.remove("d-none");
+  // proteksi kalau elemen belum ada
+  if(btn){
+    btn.disabled = true;
+  }
+  if(btnText){
+    btnText.innerText = "MENGIRIM DATA...";
+  }
+  if(btnLoading){
+    btnLoading.classList.remove("d-none");
+  }
 
   const payload = {
     cou: document.getElementById("cou").value,
@@ -664,26 +672,32 @@ window.kirimData = function () {
   const body = new URLSearchParams();
   body.append("data", JSON.stringify(payload));
 
-  fetch("https://script.google.com/macros/s/AKfycbxMEv-rj-jhjnf8-MJnJbDAZBhA5Wwx1UZDdou5ZbrUO3Iik7sfFCygZVhbJcynMmqAdQ/exec", {
+  fetch("https://script.google.com/macros/s/AKFYCBXXXXXX/exec", {
     method: "POST",
-    body
+    mode: "no-cors",   // 🔥 PENTING
+    body: body
   })
-  .then(r => r.text())
-  .then(r => {
+  .then(() => {
     alert("✅ DATA BERHASIL DISIMPAN");
-    console.log(r);
   })
-  .catch(err => {
+  .catch(() => {
     alert("❌ GAGAL KIRIM DATA");
-    console.error(err);
   })
   .finally(() => {
-    window.isSubmitting = false;
-    btn.disabled = false;
-    btnText.innerText = "SUBMIT EVALUASI";
-    btnLoading.classList.add("d-none");
+    isSubmitting = false;
+
+    if(btn){
+      btn.disabled = false;
+    }
+    if(btnText){
+      btnText.innerText = "SUBMIT EVALUASI";
+    }
+    if(btnLoading){
+      btnLoading.classList.add("d-none");
+    }
   });
-};
+}
+
 
     
 </script>
