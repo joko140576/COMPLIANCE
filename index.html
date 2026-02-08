@@ -363,7 +363,12 @@ SUMMARY EVALUASI COMPLIANCE
 </table>
 </div>
 
-<button class="btn btn-primary" onclick="kirimData()">Submit Audit</button>
+<div class="text-center mt-4">
+  <button class="btn btn-success btn-lg" onclick="kirimData()">
+    SUBMIT EVALUASI
+  </button>
+</div>
+
 
 </div>
 </div>
@@ -572,66 +577,98 @@ function hitungSummary(){
 }
 
 
-function kirimData() {
 
-  let payload = {
+/* ==========================
+   KUMPULKAN DATA PER TEMA
+========================== */
+function ambilDataTema(idx, namaTema){
+  let rows = [];
+  document.querySelectorAll("#t"+idx+" tr").forEach((tr,i)=>{
+    let comply = tr.querySelector("select")?.value || "";
+    let tds = tr.querySelectorAll("textarea");
+    let file = tr.querySelector("input[type=file]");
+
+    rows.push({
+      tema: namaTema,
+      parameter: tr.children[1].innerText,
+      comply: comply,
+      evidence: file && file.files[0] ? file.files[0].name : "",
+      keterangan: tds[0]?.value || "",
+      penyebab: tds[1]?.value || "",
+      tindak: tds[2]?.value || "",
+      rekomendasi: tds[3]?.value || "",
+      sop: tds[4]?.value || ""
+    });
+  });
+  return rows;
+}
+
+/* ==========================
+   KUMPULKAN SUMMARY
+========================== */
+function ambilSummary(){
+  let s = [];
+  for(let i=1;i<=8;i++){
+    s.push({
+      tema: document.querySelectorAll("h6")[i-1].innerText,
+      temuan: document.getElementById("tm"+i).innerText,
+      frekuensi: document.getElementById("sf"+i).innerText,
+      risiko: document.getElementById("sr"+i).innerText,
+      total: document.getElementById("tn"+i).innerText,
+      tingkat: document.getElementById("tk"+i).innerText
+    });
+  }
+  return s;
+}
+
+
+/* ==========================
+   KIRIM KE GOOGLE SHEET
+========================== */
+
+function kirimData(){
+  const payload = {
     cou: document.getElementById("cou").value,
     penilai: document.getElementById("penilai").value,
     tanggal: document.getElementById("tanggal").value,
     quartal: document.getElementById("quartal").value,
-    tema: [],
-    summary: []
+
+    tema: [
+      ...ambilDataTema(1,"Ruang Bongkar Muat"),
+      ...ambilDataTema(2,"Ruang Serah Terima Kaset"),
+      ...ambilDataTema(3,"Ruang Pemrosesan"),
+      ...ambilDataTema(4,"Ruang Khasanah"),
+      ...ambilDataTema(5,"Ruang Geledah"),
+      ...ambilDataTema(6,"Ruang Kunci Tombak"),
+      ...ambilDataTema(7,"Area Lingkungan Gedung"),
+      ...ambilDataTema(8,"Titik Kamera CCTV")
+    ],
+
+    summary: ambilSummary()
   };
 
-  /* ==========================
-     KIRIM DATA DETAIL (TEMA)
-     ========================== */
-  for (let i = 1; i <= 8; i++) {
-    document.querySelectorAll("#t" + i + " tr").forEach(row => {
-      let comply = row.querySelector("select")?.value;
-      if (!comply) return;
-
-      payload.tema.push({
-        tema: i,
-        parameter: row.children[1].innerText,
-        comply: comply,
-        keterangan: row.children[4].querySelector("textarea").value,
-        penyebab: row.children[5].querySelector("textarea").value,
-        tindak: row.children[6].querySelector("textarea").value,
-        rekomendasi: row.children[7].querySelector("textarea").value,
-        sop: row.children[8].querySelector("textarea").value
-      });
-    });
-  }
-
-  /* ==========================
-     KIRIM SUMMARY
-     ========================== */
-  for (let i = 1; i <= 8; i++) {
-    payload.summary.push({
-      tema: i,
-      temuan: document.getElementById("tm" + i).innerText,
-      frekuensi: document.getElementById("sf" + i).innerText,
-      risiko: document.getElementById("sr" + i).innerText,
-      total: document.getElementById("tn" + i).innerText,
-      tingkat: document.getElementById("tk" + i).innerText
-    });
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbzGPOY-E3TKNp1P70tfa91bwm8tpEOpCrf0Np0l60BwQOGn1UWGMoTUw7AiVTjr9GdnGg/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwUMEkKTEalz75-digTH0RwN-P9KTHMjr4bvT7sX9oyfwl6T54wqV5re3XkGbsF7zZa6A/exec", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(payload)
   })
-  .then(r => r.text())
-  .then(r => alert("✅ DATA & SUMMARY berhasil disimpan"))
-  .catch(e => alert("❌ Gagal kirim data"));
+  .then(res => res.text())
+  .then(res => {
+    alert("✅ DATA BERHASIL DISIMPAN");
+    console.log(res);
+  })
+  .catch(err => {
+    alert("❌ GAGAL KIRIM DATA");
+    console.error(err);
+  });
 }
-
-
-
-
 </script>
+
+
+
 
 </body>
 </html>
