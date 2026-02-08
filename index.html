@@ -28,6 +28,30 @@ td { font-size:13px; vertical-align:middle; }
     object-fit: cover;
     display: none;
 }
+
+.form-elegan {
+  background: linear-gradient(180deg, #ffffff, #f4f7fb);
+  border-radius: 18px;
+}
+
+.form-label {
+  color: #2c3e50;
+}
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+  border: 1px solid #dce3ec;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #4e73df;
+  box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.15);
+}
+
+    
 </style>
 
 
@@ -35,37 +59,51 @@ td { font-size:13px; vertical-align:middle; }
 
 <body>
 
-<div class="container-fluid my-4">
-<div class="card shadow">
-<div class="card-body">
+<div class="container-fluid my-5 ">
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-9">
+      <div class="card shadow-lg border-0 form-elegan">
+        <div class="card-body p-4">
 
-<h4 class="text-center">EVALUASI COMPLIANCE COU</h4>
+          <div class="text-center mb-4">
+            <h4 class="fw-bold text-primary">
+              EVALUASI COMPLIANCE COU
+            </h4>
+            <small class="text-muted">Form Penilaian Kepatuhan Unit</small>
+          </div>
 
-<!-- HEADER INPUT -->
-<div class="col-md-3">
-    <label class="form-label">Nama COU</label>
-    <input class="form-control" id="cou">
-</div>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nama COU</label>
+              <input class="form-control form-control-lg" id="cou" placeholder="Masukkan Nama COU">
+            </div>
 
-<div class="col-md-3">
-    <label class="form-label">Penilai</label>
-    <input class="form-control" id="penilai">
-</div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Penilai</label>
+              <input class="form-control form-control-lg" id="penilai" placeholder="Nama Penilai">
+            </div>
 
-<div class="col-md-3">
-    <label class="form-label">Tanggal Audit</label>
-    <input type="date" class="form-control" id="tanggal">
-</div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Tanggal Audit</label>
+              <input type="date" class="form-control form-control-lg" id="tanggal">
+            </div>
 
-<div class="col-md-3">
-    <label class="form-label">Quartal</label>
-    <select class="form-select" id="quartal">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-    </select>
-</div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Quartal</label>
+              <select class="form-select form-select-lg" id="quartal">
+                <option value="">Pilih Quartal</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+              </select>
+            </div>
+          </div>      
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
 <!-- ===================== TEMA 1 ===================== -->
