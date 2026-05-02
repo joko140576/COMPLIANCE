@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>COU Compliance System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ============================================================
+   GLOBAL
+============================================================ */
+:root {
+  --primary: #1e40af;
+  --primary-d: #1e3a8a;
+  --primary-l: #3b82f6;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warn: #f97316;
+  --bg: #eef2ff;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --dash-bg: #0a0e1a;
+  --dash-card: #111827;
+  --dash-card2: #1a2235;
+  --dash-border: #1e293b;
+  --dash-text: #e2e8f0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); }
+
+/* ============================================================
+   PAGE VIEWS — semua tersembunyi kecuali .view-active
+============================================================ */
+.view { display: none !important; }
+.view.view-active { display: flex !important; flex-direction: column; min-height: 100vh; }
+
+/* ============================================================
+   LOGIN PAGE
+============================================================ */
+#view-login {
+  background: linear-gradient(135deg, #0d1b3e 0%, #1e3a8a 40%, #1d4ed8 70%, #2563eb 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+#view-login::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255,255,255,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 80% 70%, rgba(99,102,241,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.login-grid {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  max-width: 860px; width: 100%;
+  border-radius: 24px; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
+}
+.login-brand {
+  background: linear-gradient(160deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  padding: 52px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+  border-right: 1px solid rgba(255,255,255,.08);
+  position: relative; overflow: hidden;
+}
+.login-brand::before {
+  content: '';
+  position: absolute; bottom: -60px; right: -60px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.brand-icon {
+  width: 64px; height: 64px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 28px;
+  backdrop-filter: blur(8px);
+}
+.brand-title { font-size: 24px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 12px; }
+.brand-sub { font-size: 13.5px; color: rgba(255,255,255,.62); line-height: 1.7; }
+.brand-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+.brand-pill {
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 99px; padding: 5px 14px;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.8);
+}
+.login-form-wrap {
+  background: #fff;
+  padding: 52px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.login-form-wrap h5 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.login-form-wrap p { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.lf-group { margin-bottom: 20px; }
+.lf-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px; display: block; }
+.lf-input {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px; font-family: inherit; font-size: 14px;
+  color: var(--text); outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  background: #fafbfc;
+}
+.lf-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(30,64,175,.1); background: #fff; }
+.login-err {
+  background: #fef2f2; border: 1px solid #fecaca;
+  border-radius: 10px; padding: 10px 14px;
+  color: #b91c1c; font-size: 13px; font-weight: 600;
+  margin-bottom: 18px; display: none;
+}
+.btn-login {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  color: #fff; border: none; border-radius: 12px;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+  box-shadow: 0 4px 16px rgba(30,64,175,.35);
+}
+.btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,64,175,.45); }
+.btn-login:active { transform: translateY(0); }
+@media(max-width: 680px) {
+  .login-grid { grid-template-columns: 1fr; }
+  .login-brand { padding: 36px 28px; }
+  .login-form-wrap { padding: 36px 28px; }
+}
+
+/* ============================================================
+   MENU PAGE
+============================================================ */
+#view-menu {
+  background: var(--bg);
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.menu-header {
+  text-align: center; margin-bottom: 44px;
+}
+.menu-logo {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--primary-d), var(--primary-l));
+  border-radius: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 32px; margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(30,64,175,.3);
+}
+.menu-header h3 { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.menu-header p { color: var(--muted); font-size: 14px; }
+.menu-user {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 99px; padding: 5px 14px 5px 8px;
+  font-size: 13px; font-weight: 600; color: var(--primary);
+  margin-top: 14px;
+}
+.menu-user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+.menu-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 660px; width: 100%; }
+.menu-card {
+  background: #fff; border-radius: 20px;
+  border: 1.5px solid var(--border);
+  padding: 36px 28px;
+  cursor: pointer; transition: all .25s;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  position: relative; overflow: hidden;
+}
+.menu-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: var(--mc-color, var(--primary));
+  border-radius: 20px 20px 0 0;
+}
+.menu-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.12); border-color: var(--mc-color, var(--primary)); }
+.mc-icon {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: var(--mc-bg, #eff6ff);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 18px;
+}
+.menu-card h5 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.menu-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+.mc-btn {
+  display: inline-block; margin-top: 20px;
+  padding: 9px 22px; border-radius: 99px;
+  font-size: 13px; font-weight: 700;
+  background: var(--mc-color, var(--primary)); color: #fff;
+  border: none; cursor: pointer; font-family: inherit;
+}
+.btn-logout {
+  margin-top: 36px;
+  background: none; border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 20px;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer; font-family: inherit; transition: all .2s;
+}
+.btn-logout:hover { color: var(--danger); border-color: var(--danger); }
+@media(max-width:560px) { .menu-cards { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   FORM PENILAIAN — TOP BAR
+============================================================ */
+#view-form {
+  background: var(--bg);
+  flex-direction: column;
+}
+.top-bar {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  color: white; padding: 14px 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 4px 20px rgba(30,64,175,.35);
+  position: sticky; top: 0; z-index: 200; flex-shrink: 0;
+}
+.top-bar-left h6 { font-size: 15px; font-weight: 800; margin: 0; }
+.top-bar-left small { font-size: 11px; opacity: .7; }
+.top-bar-right { display: flex; align-items: center; gap: 12px; }
+.top-bar-right small { font-size: 11px; opacity: .75; }
+.btn-back {
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  color: #fff; border-radius: 8px; padding: 6px 14px;
+  font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+  transition: all .2s;
+}
+.btn-back:hover { background: rgba(255,255,255,.25); }
+
+/* STEPPER */
+.stepper-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 20px; overflow-x: auto; flex-shrink: 0; }
+.stepper { display: flex; align-items: center; min-width: max-content; }
+.step-item { display: flex; align-items: center; cursor: pointer; }
+.step-circle {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  background: #cbd5e1; transition: all .3s;
+}
+.step-item.done .step-circle { background: var(--success); }
+.step-item.active .step-circle { background: var(--primary); box-shadow: 0 0 0 4px rgba(30,64,175,.2); }
+.step-lbl { font-size: 10px; font-weight: 600; color: var(--muted); margin-left: 6px; white-space: nowrap; max-width: 72px; line-height: 1.2; }
+.step-item.active .step-lbl { color: var(--primary); }
+.step-item.done .step-lbl { color: var(--success); }
+.step-conn { width: 24px; height: 2px; background: #cbd5e1; margin: 0 4px; flex-shrink: 0; transition: background .3s; }
+.step-conn.done { background: var(--success); }
+
+/* FORM PAGES */
+.form-scroll { flex: 1; overflow-y: auto; }
+.f-page { display: none; }
+.f-page.f-active { display: block; }
+.f-inner { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+/* Info card */
+.info-card {
+  background: #fff; border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+  padding: 36px;
+}
+.info-card .fc { border-radius: 10px; border: 1.5px solid var(--border); font-size: 14px; padding: 11px 14px; font-family: inherit; width: 100%; outline: none; transition: all .2s; }
+.info-card .fc:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,64,175,.1); }
+.fc-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: block; }
+
+/* Section header */
+.sec-hdr {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: #fff; border-radius: 14px; padding: 14px 20px; margin-bottom: 16px;
+}
+.sec-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px; flex-shrink: 0;
+}
+.sec-title { font-weight: 700; font-size: 15px; }
+
+/* Table */
+.t-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,.05); }
+.t-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.t-tbl thead th { background: #1e40af; color: #fff; font-weight: 600; font-size: 11.5px; padding: 10px 11px; border: none; vertical-align: middle; }
+.t-tbl tbody td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.t-tbl tbody tr:last-child td { border: none; }
+.t-tbl tbody tr:hover { background: #f8faff; }
+.t-tbl select, .t-tbl textarea, .t-tbl .fc-s { font-size: 12px; border-radius: 8px; border: 1px solid var(--border); padding: 5px 8px; font-family: inherit; width: 100%; outline: none; resize: vertical; min-height: 44px; transition: border-color .2s; }
+.t-tbl select:focus, .t-tbl textarea:focus { border-color: var(--primary); }
+
+/* Evidence */
+.ev-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.ev-lbl {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #f1f5f9; border: 1.5px dashed #94a3b8;
+  border-radius: 8px; padding: 5px 9px;
+  font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .2s;
+}
+.ev-lbl:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
+.ev-inp { display: none; }
+.ev-img { width: 84px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); display: none; }
+
+/* Score bar */
+.score-bar {
+  background: #fff; border-radius: 12px; border: 1px solid var(--border);
+  padding: 14px 20px; margin-top: 14px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.sc-item { text-align: center; }
+.sc-val { font-size: 22px; font-weight: 800; }
+.sc-lbl { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+.sc-div { width: 1px; height: 36px; background: var(--border); }
+.sc-prog { flex: 1; min-width: 140px; }
+.sc-prog-bar { height: 9px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.sc-prog-fill { height: 100%; border-radius: 99px; background: var(--success); transition: width .5s; }
+
+/* Nav footer */
+.nav-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: #fff; border-top: 1px solid var(--border);
+  position: sticky; bottom: 0; z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.06); flex-shrink: 0;
+}
+.bn { padding: 10px 26px; border-radius: 10px; font-weight: 700; font-size: 13.5px; border: none; cursor: pointer; font-family: inherit; transition: all .2s; }
+.bn-prev { background: #f1f5f9; color: var(--text); }
+.bn-prev:hover { background: #e2e8f0; }
+.bn-next { background: var(--primary); color: #fff; }
+.bn-next:hover { background: var(--primary-d); }
+.bn-submit { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.bn-submit:hover { background: #047857; }
+.pind { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+/* Loading overlay */
+#ld-overlay {
+  position: fixed; inset: 0;
+  background: rgba(30,64,175,.88);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999; flex-direction: column; gap: 16px;
+}
+#ld-overlay.show { display: flex; }
+.ld-spin { width: 52px; height: 52px; border: 4px solid rgba(255,255,255,.25); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+.ld-txt { color: #fff; font-weight: 700; font-size: 15px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Success screen */
+#view-success {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  align-items: center; justify-content: center; text-align: center; padding: 40px;
+}
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+#view-dashboard {
+  background: var(--dash-bg);
+  flex-direction: column;
+}
+.dash-topbar {
+  background: linear-gradient(135deg, #0d1b3e 0%, #1e3a8a 100%);
+  padding: 18px 28px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+  border-bottom: 1px solid var(--dash-border); flex-shrink: 0;
+}
+.dash-topbar h5 { font-weight: 800; font-size: 17px; color: #fff; margin: 0; }
+.dash-topbar small { color: #93c5fd; font-size: 12px; }
+.dash-acts { display: flex; gap: 10px; }
+.d-btn {
+  padding: 7px 16px; border-radius: 9px;
+  font-size: 12px; font-weight: 700; border: none; cursor: pointer; font-family: inherit;
+  transition: all .2s;
+}
+.d-btn-outline { background: rgba(59,130,246,.15); border: 1px solid #3b82f6; color: #93c5fd; }
+.d-btn-outline:hover { background: rgba(59,130,246,.3); }
+.d-btn-back { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.8); }
+.d-btn-back:hover { background: rgba(255,255,255,.2); }
+
+.dash-filter {
+  background: var(--dash-card); border-bottom: 1px solid var(--dash-border);
+  padding: 12px 28px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  flex-shrink: 0;
+}
+.dash-filter select {
+  background: var(--dash-card2); border: 1px solid var(--dash-border);
+  color: var(--dash-text); border-radius: 9px; padding: 7px 12px;
+  font-size: 12.5px; font-family: inherit; outline: none;
+}
+.dash-filter label { font-size: 11px; color: var(--muted); font-weight: 600; }
+#d-lastupdate { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+.dash-scroll { flex: 1; overflow-y: auto; padding: 20px 28px; }
+
+/* Stat cards */
+.d-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.d-stat {
+  background: var(--dash-card); border: 1px solid var(--dash-border);
+  border-radius: 14px; padding: 18px 20px; position: relative; overflow: hidden;
+}
+.d-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--ds-color, #3b82f6); }
+.d-stat-val { font-size: 28px; font-weight: 800; color: var(--ds-color, #3b82f6); }
+.d-stat-lbl { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-top: 3px; }
+
+/* Chart grid */
+.d-chart-grid2 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 20px; }
+.d-chart-grid3 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.d-chart-card {
+  background: var(--dash-card); border: 1px solid var(--dash-border);
+  border-radius: 14px; padding: 18px 20px;
+}
+.d-chart-title { font-weight: 700; font-size: 13px; color: var(--dash-text); margin-bottom: 4px; }
+.d-chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+.d-chart-wrap { position: relative; height: 220px; }
+
+/* Table */
+.d-tbl-card { background: var(--dash-card); border: 1px solid var(--dash-border); border-radius: 14px; overflow: hidden; }
+.d-tbl-hdr { padding: 14px 18px; border-bottom: 1px solid var(--dash-border); display: flex; justify-content: space-between; align-items: center; }
+.d-tbl-hdr-title { font-weight: 700; font-size: 13px; color: var(--dash-text); }
+.dtbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.dtbl th { background: var(--dash-card2); color: var(--muted); font-size: 11px; text-transform: uppercase; font-weight: 700; padding: 9px 14px; border-bottom: 1px solid var(--dash-border); text-align: left; }
+.dtbl td { padding: 9px 14px; border-bottom: 1px solid rgba(30,41,59,.4); color: var(--dash-text); }
+.dtbl tr:hover td { background: rgba(59,130,246,.04); }
+.dtbl tr:last-child td { border: none; }
+.rbadge { padding: 2px 9px; border-radius: 99px; font-size: 10.5px; font-weight: 700; }
+.rb-sr { background: rgba(16,185,129,.15); color: #10b981; }
+.rb-r { background: rgba(245,158,11,.15); color: #f59e0b; }
+.rb-s { background: rgba(249,115,22,.15); color: #f97316; }
+.rb-t { background: rgba(239,68,68,.15); color: #ef4444; }
+.mini-prog { display: flex; align-items: center; gap: 7px; }
+.mini-bar { flex: 1; height: 5px; background: var(--dash-border); border-radius: 99px; overflow: hidden; }
+.mini-fill { height: 100%; border-radius: 99px; }
+
+/* Loading state */
+.d-loading { text-align: center; padding: 60px; color: var(--muted); }
+.d-spin { width: 36px; height: 36px; border: 3px solid var(--dash-border); border-top-color: #3b82f6; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 12px; }
+
+@media(max-width: 860px) {
+  .d-chart-grid2, .d-chart-grid3 { grid-template-columns: 1fr; }
+  .dash-scroll { padding: 14px 16px; }
+  .dash-topbar { padding: 14px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================================================
+     LOADING OVERLAY
+====================================================== -->
+<div id="ld-overlay">
+  <div class="ld-spin"></div>
+  <div class="ld-txt" id="ld-txt">Memproses...</div>
+</div>
+
+<!-- ======================================================
+     VIEW 1: LOGIN
+====================================================== -->
+<div id="view-login" class="view view-active">
+  <div class="login-grid">
+    <div class="login-brand">
+      <div class="brand-icon">📋</div>
+      <div class="brand-title">COU Compliance<br>Evaluation System</div>
+      <div class="brand-sub">Sistem Evaluasi Kepatuhan Kantor Sentra Operasi — monitoring 8 area penilaian secara terpadu.</div>
+      <div class="brand-pills">
+        <span class="brand-pill">8 Area Evaluasi</span>
+        <span class="brand-pill">Real-time Score</span>
+        <span class="brand-pill">Dashboard Analitik</span>
+        <span class="brand-pill">Google Drive</span>
+      </div>
+    </div>
+    <div class="login-form-wrap">
+      <h5>Selamat Datang</h5>
+      <p>Masuk untuk mengakses sistem evaluasi</p>
+      <div id="login-err" class="login-err">⚠️ Username atau password salah.</div>
+      <div class="lf-group">
+        <label class="lf-label">Username</label>
+        <input class="lf-input" id="l-user" type="text" placeholder="Masukkan username" autocomplete="username">
+      </div>
+      <div class="lf-group">
+        <label class="lf-label">Password</label>
+        <input class="lf-input" id="l-pass" type="password" placeholder="Masukkan password" autocomplete="current-password">
+      </div>
+      <button class="btn-login" onclick="doLogin()">Masuk ke Sistem</button>
+      <div style="margin-top:20px;text-align:center;font-size:12px;color:#94a3b8;">
+        Sistem Internal — Akses Terbatas
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW 2: MENU UTAMA
+====================================================== -->
+<div id="view-menu" class="view">
+  <div style="text-align:center;width:100%;max-width:800px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
+    <div class="menu-header">
+      <div class="menu-logo">📋</div>
+      <h3>COU Compliance System</h3>
+      <p>Pilih menu yang ingin Anda akses</p>
+      <div class="menu-user">
+        <div class="menu-user-dot"></div>
+        <span id="menu-uname">—</span>
+      </div>
+    </div>
+    <div class="menu-cards">
+      <div class="menu-card" style="--mc-color:#1e40af;--mc-bg:#eff6ff;" onclick="goTo('form')">
+        <div class="mc-icon">📝</div>
+        <h5>Form Penilaian</h5>
+        <p>Lakukan evaluasi compliance 8 area untuk satu COU</p>
+        <button class="mc-btn" style="--mc-color:#1e40af">Mulai Penilaian →</button>
+      </div>
+      <div class="menu-card" style="--mc-color:#0f766e;--mc-bg:#f0fdfa;" onclick="goTo('dashboard')">
+        <div class="mc-icon">📊</div>
+        <h5>Lihat Dashboard</h5>
+        <p>Monitor hasil evaluasi semua COU secara visual</p>
+        <button class="mc-btn" style="--mc-color:#0f766e">Buka Dashboard →</button>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Keluar dari Sistem</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW 3: FORM PENILAIAN
+====================================================== -->
+<div id="view-form" class="view">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <h6>📋 EVALUASI COMPLIANCE COU</h6>
+      <small>Form Penilaian Kepatuhan Unit</small>
+    </div>
+    <div class="top-bar-right">
+      <small id="f-cou-info">COU: —</small>
+      <button class="btn-back" onclick="backToMenu()">← Menu</button>
+    </div>
+  </div>
+  <!-- Stepper -->
+  <div class="stepper-bar">
+    <div class="stepper" id="stepper"></div>
+  </div>
+  <!-- Form pages -->
+  <div class="form-scroll" id="form-scroll">
+    <!-- Page 0: Info -->
+    <div class="f-page f-active" id="fp-0">
+      <div class="f-inner">
+        <div class="info-card">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#1e40af,#3b82f6);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;">📋</div>
+            <h5 style="font-weight:800;font-size:18px;margin-bottom:6px;">Informasi Audit</h5>
+            <p style="color:var(--muted);font-size:13px;margin:0;">Lengkapi data sebelum memulai evaluasi</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+              <label class="fc-label">Nama COU <span style="color:red">*</span></label>
+              <input class="fc" id="f-cou" placeholder="Nama COU" oninput="document.getElementById('f-cou-info').innerText='COU: '+this.value">
+            </div>
+            <div>
+              <label class="fc-label">Nama Penilai <span style="color:red">*</span></label>
+              <input class="fc" id="f-penilai" placeholder="Nama penilai">
+            </div>
+            <div>
+              <label class="fc-label">Tanggal Audit <span style="color:red">*</span></label>
+              <input type="date" class="fc" id="f-tanggal">
+            </div>
+            <div>
+              <label class="fc-label">Quartal <span style="color:red">*</span></label>
+              <select class="fc" id="f-quartal">
+                <option value="">Pilih Quartal</option>
+                <option value="1">Q1 (Jan–Mar)</option>
+                <option value="2">Q2 (Apr–Jun)</option>
+                <option value="3">Q3 (Jul–Sep)</option>
+                <option value="4">Q4 (Okt–Des)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pages 1–8 dibuat oleh JS -->
+  </div>
+  <!-- Nav footer -->
+  <div class="nav-foot">
+    <button class="bn bn-prev" id="f-prev" onclick="fPrev()">← Sebelumnya</button>
+    <span class="pind" id="f-pind">Halaman 1 dari 9</span>
+    <button class="bn bn-next" id="f-next" onclick="fNext()">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW 4: SUCCESS
+====================================================== -->
+<div id="view-success" class="view">
+  <div style="font-size:72px;margin-bottom:16px;">✅</div>
+  <h3 style="font-weight:800;color:#065f46;margin-bottom:8px;">Data Berhasil Dikirim!</h3>
+  <p style="color:#047857;margin-bottom:28px;font-size:14px;">Evaluasi Compliance COU telah tersimpan.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button onclick="resetForm();goTo('form')" style="padding:12px 28px;background:#1e40af;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">+ Evaluasi Baru</button>
+    <button onclick="goTo('dashboard')" style="padding:12px 28px;background:#0f766e;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">Lihat Dashboard</button>
+    <button onclick="goTo('menu')" style="padding:12px 28px;background:#f1f5f9;color:var(--text);border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">Kembali ke Menu</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW 5: DASHBOARD
+====================================================== -->
+<div id="view-dashboard" class="view">
+  <div class="dash-topbar">
+    <div>
+      <h5>📊 Dashboard Compliance COU</h5>
+      <small>Monitoring Evaluasi Kepatuhan Sentra Operasi</small>
+    </div>
+    <div class="dash-acts">
+      <button class="d-btn d-btn-outline" onclick="loadDash()">🔄 Refresh</button>
+      <button class="d-btn d-btn-back" onclick="goTo('menu')">← Menu</button>
+    </div>
+  </div>
+  <div class="dash-filter">
+    <div>
+      <label class="d-block" style="margin-bottom:4px;">Filter COU</label>
+      <select id="d-cou" onchange="renderDash()"><option value="">Semua COU</option></select>
+    </div>
+    <div>
+      <label class="d-block" style="margin-bottom:4px;">Filter Quartal</label>
+      <select id="d-q" onchange="renderDash()">
+        <option value="">Semua</option>
+        <option value="1">Q1</option><option value="2">Q2</option>
+        <option value="3">Q3</option><option value="4">Q4</option>
+      </select>
+    </div>
+    <div>
+      <label class="d-block" style="margin-bottom:4px;">Filter Tema</label>
+      <select id="d-tema" onchange="renderDash()"><option value="">Semua Tema</option></select>
+    </div>
+    <span id="d-lastupdate"></span>
+  </div>
+  <div class="dash-scroll">
+    <div id="d-loading" class="d-loading">
+      <div class="d-spin"></div>
+      <div>Memuat data...</div>
+    </div>
+    <div id="d-content" style="display:none">
+      <div class="d-stat-grid" id="d-stats"></div>
+      <div class="d-chart-grid2">
+        <div class="d-chart-card">
+          <div class="d-chart-title">Tingkat Kepatuhan per COU</div>
+          <div class="d-chart-sub">Estimasi % comply berdasarkan jumlah temuan</div>
+          <div class="d-chart-wrap"><canvas id="dc-cou"></canvas></div>
+        </div>
+        <div class="d-chart-card">
+          <div class="d-chart-title">Distribusi Risiko</div>
+          <div class="d-chart-sub">Sebaran tingkat risiko kepatuhan</div>
+          <div class="d-chart-wrap"><canvas id="dc-risk"></canvas></div>
+        </div>
+      </div>
+      <div class="d-chart-grid3">
+        <div class="d-chart-card">
+          <div class="d-chart-title">Temuan per Tema</div>
+          <div class="d-chart-sub">Total non-comply per area evaluasi</div>
+          <div class="d-chart-wrap"><canvas id="dc-tema"></canvas></div>
+        </div>
+        <div class="d-chart-card">
+          <div class="d-chart-title">Trend per Quartal</div>
+          <div class="d-chart-sub">Rata-rata temuan per quartal</div>
+          <div class="d-chart-wrap"><canvas id="dc-trend"></canvas></div>
+        </div>
+      </div>
+      <div class="d-tbl-card">
+        <div class="d-tbl-hdr">
+          <div class="d-tbl-hdr-title">Ringkasan Hasil Evaluasi</div>
+          <small id="d-rowcount" style="color:var(--muted);font-size:11px;"></small>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="dtbl">
+            <thead>
+              <tr>
+                <th>COU</th><th>Penilai</th><th>Tanggal</th><th>Q</th>
+                <th>Tema</th><th>Temuan</th><th>Kepatuhan</th><th>Risiko</th>
+              </tr>
+            </thead>
+            <tbody id="d-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     SCRIPTS
+====================================================== -->
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwMUFD0i25qS8HLPwzWtpTO6yGl2TUkAkQWl9ytg-FpGOV5KnVwxmmZNf-vsq2HntZxIQ/exec"; // ← Ganti ini
+
+// ============================================================
+// AUTH
+// ============================================================
+const USERS = { ssi: "integritas" }; // user: pass
+
+function doLogin() {
+  const u = document.getElementById("l-user").value.trim().toLowerCase();
+  const p = document.getElementById("l-pass").value;
+  const err = document.getElementById("login-err");
+  if (USERS[u] && USERS[u] === p) {
+    err.style.display = "none";
+    sessionStorage.setItem("cou_user", u);
+    document.getElementById("menu-uname").innerText = u.toUpperCase();
+    goTo("menu");
+  } else {
+    err.style.display = "block";
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem("cou_user");
+  goTo("login");
+}
+
+// Enter key on login
+document.getElementById("l-pass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+document.getElementById("l-user").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+
+// ============================================================
+// VIEW ROUTER
+// ============================================================
+const VIEWS = { login:"view-login", menu:"view-menu", form:"view-form", success:"view-success", dashboard:"view-dashboard" };
+
+function goTo(name) {
+  // Auth guard
+  if (name !== "login" && !sessionStorage.getItem("cou_user")) { goTo("login"); return; }
+  Object.values(VIEWS).forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove("view-active");
+  });
+  document.getElementById(VIEWS[name]).classList.add("view-active");
+  if (name === "dashboard") loadDash();
+  window.scrollTo(0,0);
+}
+
+function backToMenu() { goTo("menu"); }
+
+// ============================================================
+// FORM DATA
+// ============================================================
+const TEMAS = [
+  { id:1, judul:"RUANG BONGKAR MUAT (LOADING LUAR)", items:["Kamera Ruang Bongkar Muat","Penggunaan TPP","Kerapihan dan Kebersihan Ruang Bongkar Muat","Kondisi Pintu Air Bagian Luar","Kunci Gembok Brankas Kendaraan (Dual Kontrol)","Penggunaan Trolley","Penggunaan Tas Kaset / Karung"] },
+  { id:2, judul:"RUANG SERAH TERIMA KASET (LOADING DALAM)", items:["Kamera Ruang Bongkar Muat Bagian Dalam","Penggunaan Seragam Khusus Cashier","Kerapihan & Kebersihan Ruang Serah Terima Kaset","Kondisi Pintu Air Bagian Dalam","Penggunaan Trolley","Penggunaan Tas Kaset / Karung","Kesesuaian Pemakaian Seragam Khusus Cashier"] },
+  { id:3, judul:"RUANG PEMROSESAN", items:["Kamera Ruang Pemrosesan","Kebersihan (Sterilisasi Ruang Pemrosesan)","Penggunaan Palet / Container","Papan Tulis (Pencatatan identitas sortir, perhitungan SR dan pengisian)","Perhitungan sebelum uang masuk ke kaset ATM/CRM","Komputer Cashier / Scanner Barcode","Penggunaan Tas Kaset / Karung","Pengecekan Segel Kaset ATM (Scan Segel)","Penggunaan Seragam Khusus Cashier (Resleting Belakang)","Larangan membawa dompet, perhiasan dan jam tangan","Amplop divert menggunakan plastik transparan warna putih","Penyusunan kaset ATM lebih dari 4 kaset"] },
+  { id:4, judul:"RUANG KHASANAH", items:["Kamera Ruang Khasanah","Penggunaan Seragam Khusus Cashier (Resleting Belakang)","Kerapihan / Kebersihan (Sterilisasi Ruang Khasanah)","Kunci Tralis disimpan oleh Cashier","Kunci Tombak Brankas Penyimpanan Uang disimpan oleh Manager / Asst. Manager","Buku Logbook Masuk ke Ruang Khasanah","Penempatan uang (valet / container)","Nama Bank pada Brankas","Kesesuaian Pemakaian Seragam Khusus Cashier","Kunci pintu kluis disimpan oleh Manager / Asst. Manager"] },
+  { id:5, judul:"RUANG GELEDAH", items:["Kamera Ruang Geledah","Kerapihan / Kebersihan (Sterilisasi Ruang Geledah)","Buku Logbook Masuk ke Ruang Pemrosesan","Penggeledahan satu per satu terhadap petugas yang keluar dari ruang steril","Penggeledahan satu per satu terhadap petugas yang masuk ke ruang steril","Pengecekan / penggeledahan terhadap benda yang keluar dari ruang steril","Menggunakan Sandal Khusus Cashier","Penggeledahan secara detail","Pintu Masuk Ruang Geledah (Tertutup / Terbuka)","Pintu Masuk Ruang Pemrosesan (Tertutup / Terbuka)","Kerapihan Petugas","Mengeluarkan / memasukkan fisik uang"] },
+  { id:6, judul:"RUANG PENYIMPANAN KUNCI TOMBAK", items:["Kamera Ruang Kunci Tombak","Penggunaan TPP","Kerapihan / Kebersihan (Sterilisasi Ruang Serah Terima Kaset)","Serah Terima Kunci Tombak (Scanning Barcode)","Berdasarkan Surat Tugas Pengisian Kas ATM/CRM (Restocking)","Berdasarkan Surat Tugas Perbaikan Mesin ATM/CRM (FLM)","Dual kontrol masuk ke ruang penyimpanan kunci tombak (Manager / Asst & Staf Administrasi Perencana)","Pintu Masuk ke Ruang Penyimpanan Kunci Tombak (Tertutup / Terbuka)"] },
+  { id:7, judul:"AREA LINGKUNGAN GEDUNG KANTOR", items:["Kamera area lingkungan dalam gedung kantor","Penggunaan TPP","Kebersihan Lingkungan Gedung Kantor","Penggeledahan karyawan keluar dan masuk Gedung Kantor","Pintu Gerbang Masuk Gedung Kantor (Terbuka / Tertutup)","Ruang Pimpinan","Ruang Staf Administrasi","Pengecekan Kendaraan Operasional (Checklist Kendaraan)","Buku Register Mutasi Security","Penggeledahan Kendaraan Keluar dan Masuk Gedung Kantor"] },
+  { id:8, judul:"TITIK KAMERA CCTV ONLINE", items:["Kamera loading luar","Kamera loading dalam","Kamera yang menghadap pintu depan ruang brankas","Kamera mengarah ke pintu dalam ruang brankas","Kamera ruang brankas","Kamera ruang sortir","Kamera ruang pengisian dan perhitungan","Kamera ruang kaset","Kamera yang menghadap pintu geledah","Kamera ruang geledah","Kamera yang menghadap pintu geledah dengan ruang kerja admin","Kamera yang menghadap pintu ruang kunci","Kamera yang menghadap pintu kunci tombak","Kamera yang menghadap ke ruang pimpinan","Kamera halaman depan kantor","Kamera depan gerbang kantor"] }
+];
+
+let fCurPage = 0;
+const F_TOTAL = 9;
+const imgStore = {};
+
+function buildFormPages() {
+  const scroll = document.getElementById("form-scroll");
+  TEMAS.forEach(tema => {
+    const div = document.createElement("div");
+    div.className = "f-page";
+    div.id = `fp-${tema.id}`;
+    div.innerHTML = `
+      <div class="f-inner">
+        <div class="sec-hdr">
+          <div class="sec-num">${tema.id}</div>
+          <div>
+            <div class="sec-title">${tema.judul}</div>
+            <div style="font-size:11px;opacity:.75;">${tema.items.length} item penilaian</div>
+          </div>
+        </div>
+        <div class="t-card">
+          <div style="overflow-x:auto;">
+            <table class="t-tbl">
+              <thead><tr>
+                <th style="width:34px">No</th>
+                <th>Hal yang Diobservasi</th>
+                <th style="width:86px">Comply</th>
+                <th style="width:100px">Evidence</th>
+                <th style="width:120px">Keterangan</th>
+                <th style="width:120px">Penyebab</th>
+                <th style="width:120px">Tindak Lanjut</th>
+                <th style="width:120px">Rekomendasi</th>
+                <th style="width:110px">Referensi SOP</th>
+              </tr></thead>
+              <tbody>
+                ${tema.items.map((item,i)=>`
+                <tr>
+                  <td style="text-align:center;font-weight:700">${i+1}</td>
+                  <td>${item}</td>
+                  <td>
+                    <select class="fc-s" id="cy-${tema.id}-${i}" onchange="hitungTema(${tema.id})">
+                      <option value=""></option>
+                      <option value="Y">✅ Y</option>
+                      <option value="N">❌ N</option>
+                    </select>
+                  </td>
+                  <td>
+                    <div class="ev-wrap">
+                      <label class="ev-lbl">📷 Foto
+                        <input type="file" class="ev-inp" accept="image/*" id="img-${tema.id}-${i}" onchange="previewImg(this,${tema.id},${i})">
+                      </label>
+                      <img class="ev-img" id="prev-${tema.id}-${i}" alt="">
+                    </div>
+                  </td>
+                  <td><textarea class="fc-s" id="ket-${tema.id}-${i}" rows="2"></textarea></td>
+                  <td><textarea class="fc-s" id="penyebab-${tema.id}-${i}" rows="2"></textarea></td>
+                  <td><textarea class="fc-s" id="tindak-${tema.id}-${i}" rows="2"></textarea></td>
+                  <td><textarea class="fc-s" id="rek-${tema.id}-${i}" rows="2"></textarea></td>
+                  <td><textarea class="fc-s" id="sop-${tema.id}-${i}" rows="2"></textarea></td>
+                </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="score-bar" id="sb-${tema.id}">
+          <div class="sc-item"><div class="sc-val" id="sy-${tema.id}" style="color:var(--success)">0</div><div class="sc-lbl">Comply Y</div></div>
+          <div class="sc-div"></div>
+          <div class="sc-item"><div class="sc-val" id="sn-${tema.id}" style="color:var(--danger)">0</div><div class="sc-lbl">Non-Comply N</div></div>
+          <div class="sc-div"></div>
+          <div class="sc-item"><div class="sc-val" id="sp-${tema.id}" style="color:var(--primary-l)">0%</div><div class="sc-lbl">Kepatuhan</div></div>
+          <div class="sc-div"></div>
+          <div class="sc-item"><div class="sc-val" id="stk-${tema.id}" style="color:var(--muted);font-size:14px">-</div><div class="sc-lbl">Tingkat Risiko</div></div>
+          <div class="sc-prog">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><small style="color:var(--muted);font-size:10px;font-weight:700">Progress</small><small id="sp2-${tema.id}" style="font-size:10px;color:var(--muted)">0%</small></div>
+            <div class="sc-prog-bar"><div class="sc-prog-fill" id="spf-${tema.id}" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>`;
+    scroll.appendChild(div);
+  });
+}
+
+function buildStepper() {
+  const el = document.getElementById("stepper");
+  const steps = ["Info", ...TEMAS.map(t=>`#${t.id}`)];
+  steps.forEach((lbl,i)=>{
+    if(i>0) el.innerHTML += `<div class="step-conn" id="sc-${i}"></div>`;
+    el.innerHTML += `<div class="step-item" id="si-${i}" onclick="fJump(${i})">
+      <div class="step-circle">${i===0?"📋":i}</div>
+      <div class="step-lbl">${lbl}</div>
+    </div>`;
+  });
+}
+
+function updateStepper() {
+  for(let i=0;i<F_TOTAL;i++){
+    const el=document.getElementById("si-"+i); if(!el) continue;
+    el.classList.remove("done","active");
+    if(i<fCurPage) el.classList.add("done");
+    else if(i===fCurPage) el.classList.add("active");
+    if(i>0){ const c=document.getElementById("sc-"+i); if(c) c.classList.toggle("done",i<=fCurPage); }
+  }
+}
+
+function fShowPage(idx) {
+  document.querySelectorAll(".f-page").forEach(p=>p.classList.remove("f-active"));
+  document.getElementById("fp-"+idx).classList.add("f-active");
+  fCurPage=idx; updateStepper(); updateFNav();
+  document.getElementById("form-scroll").scrollTo(0,0);
+}
+
+function fJump(i){ fShowPage(i); }
+
+function fNext(){
+  if(fCurPage===0 && !validateInfo()) return;
+  if(fCurPage<F_TOTAL-1) fShowPage(fCurPage+1);
+  else submitForm();
+}
+
+function fPrev(){ if(fCurPage>0) fShowPage(fCurPage-1); }
+
+function updateFNav(){
+  const prev=document.getElementById("f-prev");
+  const next=document.getElementById("f-next");
+  const ind=document.getElementById("f-pind");
+  prev.style.visibility = fCurPage===0?"hidden":"visible";
+  ind.innerText=`Halaman ${fCurPage+1} dari ${F_TOTAL}`;
+  if(fCurPage===F_TOTAL-1){
+    next.textContent="🚀 Submit Evaluasi"; next.className="bn bn-submit";
+  } else {
+    next.textContent="Selanjutnya →"; next.className="bn bn-next";
+  }
+}
+
+function validateInfo(){
+  const v = ["f-cou","f-penilai","f-tanggal","f-quartal"].map(id=>document.getElementById(id).value.trim());
+  if(v.some(x=>!x)){ alert("⚠️ Harap lengkapi semua field informasi audit."); return false; }
+  return true;
+}
+
+function previewImg(input, tid, idx){
+  const img=document.getElementById(`prev-${tid}-${idx}`);
+  if(input.files && input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      img.src=e.target.result; img.style.display="block";
+      imgStore[`${tid}-${idx}`]={base64:e.target.result, name:input.files[0].name};
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+
+function hitungTema(tid){
+  const tema=TEMAS.find(t=>t.id===tid); let y=0,n=0;
+  tema.items.forEach((_,i)=>{ const v=document.getElementById(`cy-${tid}-${i}`)?.value; if(v==="Y")y++; if(v==="N")n++; });
+  const t=y+n, pct=t?Math.round(y/t*100):0;
+  const colors={"Sangat Rendah":"#10b981","Rendah":"#f59e0b","Sedang":"#f97316","⚠️ Tinggi":"#ef4444"};
+  let tk="Sangat Rendah";
+  if(n>=1&&n<3)tk="Rendah"; if(n>=3&&n<5)tk="Sedang"; if(n>=5)tk="⚠️ Tinggi";
+  document.getElementById(`sy-${tid}`).innerText=y;
+  document.getElementById(`sn-${tid}`).innerText=n;
+  document.getElementById(`sp-${tid}`).innerText=pct+"%";
+  document.getElementById(`sp2-${tid}`).innerText=pct+"%";
+  document.getElementById(`stk-${tid}`).innerText=tk;
+  document.getElementById(`stk-${tid}`).style.color=colors[tk]||"#64748b";
+  document.getElementById(`spf-${tid}`).style.width=pct+"%";
+}
+
+function kumpulkanFormData(){
+  const tema=[];
+  TEMAS.forEach(t=>{
+    t.items.forEach((item,i)=>{
+      const k=`${t.id}-${i}`;
+      tema.push({
+        tema: t.judul.split("(")[0].trim().replace(/^\d+\. /,"").trim(),
+        parameter: item,
+        comply: document.getElementById(`cy-${t.id}-${i}`)?.value||"",
+        evidenceBase64: imgStore[k]?.base64||"",
+        evidenceName: imgStore[k]?.name||"",
+        keterangan: document.getElementById(`ket-${t.id}-${i}`)?.value||"",
+        penyebab: document.getElementById(`penyebab-${t.id}-${i}`)?.value||"",
+        tindak: document.getElementById(`tindak-${t.id}-${i}`)?.value||"",
+        rekomendasi: document.getElementById(`rek-${t.id}-${i}`)?.value||"",
+        sop: document.getElementById(`sop-${t.id}-${i}`)?.value||""
+      });
+    });
+  });
+  const summary=TEMAS.map(t=>({
+    tema: t.judul,
+    temuan: parseInt(document.getElementById(`sn-${t.id}`)?.innerText||0),
+    frekuensi: parseInt(document.getElementById(`sn-${t.id}`)?.innerText||0)>0?1:0,
+    risiko: parseInt(document.getElementById(`sn-${t.id}`)?.innerText||0)>0?2:0,
+    total: parseInt(document.getElementById(`sn-${t.id}`)?.innerText||0)>0?2:0,
+    tingkat: document.getElementById(`stk-${t.id}`)?.innerText||"-"
+  }));
+  return {
+    cou: document.getElementById("f-cou").value,
+    penilai: document.getElementById("f-penilai").value,
+    tanggal: document.getElementById("f-tanggal").value,
+    quartal: document.getElementById("f-quartal").value,
+    tema, summary
+  };
+}
+
+function submitForm(){
+  showLd("Mengumpulkan data...");
+  setTimeout(()=>{
+    const payload=kumpulkanFormData();
+    setLdTxt("Mengirim ke server...");
+    const body=new URLSearchParams(); body.append("data",JSON.stringify(payload));
+    fetch(GAS_URL,{method:"POST",mode:"no-cors",body})
+    .then(()=>{ hideLd(); goTo("success"); })
+    .catch(e=>{ hideLd(); alert("❌ Gagal kirim: "+e); });
+  },300);
+}
+
+function resetForm(){
+  TEMAS.forEach(t=>{
+    t.items.forEach((_,i)=>{
+      const cy=document.getElementById(`cy-${t.id}-${i}`); if(cy) cy.value="";
+      ["ket","penyebab","tindak","rek","sop"].forEach(f=>{ const el=document.getElementById(`${f}-${t.id}-${i}`); if(el) el.value=""; });
+      const img=document.getElementById(`prev-${t.id}-${i}`); if(img){img.src="";img.style.display="none";}
+      const inp=document.getElementById(`img-${t.id}-${i}`); if(inp) inp.value="";
+    });
+    ["sy","sn","sp","sp2","stk"].forEach(p=>{ const el=document.getElementById(`${p}-${t.id}`); if(el) el.innerText=["sy","sn"].includes(p)?0:["sp","sp2"].includes(p)?"0%":"-"; });
+    const fill=document.getElementById(`spf-${t.id}`); if(fill) fill.style.width="0%";
+  });
+  ["f-cou","f-penilai","f-tanggal"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  document.getElementById("f-quartal").value="";
+  Object.keys(imgStore).forEach(k=>delete imgStore[k]);
+  fShowPage(0);
+}
+
+// ============================================================
+// LOADING
+// ============================================================
+function showLd(t){ document.getElementById("ld-overlay").classList.add("show"); setLdTxt(t); }
+function hideLd(){ document.getElementById("ld-overlay").classList.remove("show"); }
+function setLdTxt(t){ document.getElementById("ld-txt").innerText=t; }
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+let dashData=[], dashCharts={};
+
+async function loadDash(){
+  document.getElementById("d-loading").style.display="block";
+  document.getElementById("d-content").style.display="none";
+  try{
+    const res=await fetch(GAS_URL+"?action=getData");
+    const json=await res.json();
+    dashData=json.rows||[];
+    populateDashFilters();
+    renderDash();
+    document.getElementById("d-lastupdate").innerText="Update: "+new Date().toLocaleString("id-ID");
+    document.getElementById("d-loading").style.display="none";
+    document.getElementById("d-content").style.display="block";
+  } catch(e){
+    document.getElementById("d-loading").innerHTML=`<div style="color:#ef4444;font-size:13px">⚠️ Gagal memuat data.<br><small>${e.message}</small><br><br><button onclick="loadDash()" style="padding:8px 16px;background:#1e40af;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit">Coba Lagi</button></div>`;
+  }
+}
+
+function populateDashFilters(){
+  const COUs=[...new Set(dashData.map(r=>r["COU"]).filter(Boolean))].sort();
+  const temas=[...new Set(dashData.map(r=>r["Tema"]).filter(Boolean))].sort();
+  const fCOU=document.getElementById("d-cou");
+  fCOU.innerHTML=`<option value="">Semua COU</option>`+COUs.map(c=>`<option>${c}</option>`).join("");
+  const fTema=document.getElementById("d-tema");
+  fTema.innerHTML=`<option value="">Semua Tema</option>`+temas.map(t=>`<option>${t}</option>`).join("");
+}
+
+function getDashFiltered(){
+  const cou=document.getElementById("d-cou").value;
+  const q=document.getElementById("d-q").value;
+  const tema=document.getElementById("d-tema").value;
+  return dashData.filter(r=>
+    (!cou||r["COU"]===cou)&&
+    (!q||String(r["Quartal"])===q)&&
+    (!tema||r["Tema"]===tema)
+  );
+}
+
+function renderDash(){
+  const data=getDashFiltered();
+  renderDashStats(data); renderChartCOU(data); renderChartRisk(data);
+  renderChartTema(data); renderChartTrend(data); renderDashTable(data);
+}
+
+function renderDashStats(data){
+  const COUs=new Set(data.map(r=>r["COU"]));
+  const totalTemuan=data.reduce((s,r)=>s+(parseInt(r["Jumlah Temuan"])||0),0);
+  const risikeTinggi=data.filter(r=>r["Tingkat Risiko"]&&r["Tingkat Risiko"].includes("Tinggi")).length;
+  const audits=new Set(data.map(r=>r["Timestamp"])).size;
+  document.getElementById("d-stats").innerHTML=`
+    <div class="d-stat" style="--ds-color:#3b82f6"><div class="d-stat-val">${COUs.size}</div><div class="d-stat-lbl">COU Dievaluasi</div></div>
+    <div class="d-stat" style="--ds-color:#10b981"><div class="d-stat-val">${data.length}</div><div class="d-stat-lbl">Total Data Baris</div></div>
+    <div class="d-stat" style="--ds-color:#f59e0b"><div class="d-stat-val">${totalTemuan}</div><div class="d-stat-lbl">Total Temuan (N)</div></div>
+    <div class="d-stat" style="--ds-color:#ef4444"><div class="d-stat-val">${risikeTinggi}</div><div class="d-stat-lbl">Risiko Tinggi</div></div>
+  `;
+}
+
+function destroyDChart(id){ if(dashCharts[id]){dashCharts[id].destroy();delete dashCharts[id];} }
+
+function dChartOpts(extra={}){
+  return { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>c.formattedValue+(extra.suffix||"")}}}, scales:{x:{ticks:{color:"#64748b",font:{size:10}},grid:{color:"rgba(30,41,59,.5)"}},y:{ticks:{color:"#64748b",font:{size:10}},grid:{color:"rgba(30,41,59,.5)"},...extra.yOpts}}, ...extra };
+}
+
+function renderChartCOU(data){
+  const m={}; data.forEach(r=>{const c=r["COU"]||"?"; if(!m[c]) m[c]={n:0,rows:0}; m[c].n+=parseInt(r["Jumlah Temuan"])||0; m[c].rows++;});
+  const labels=Object.keys(m);
+  const pcts=labels.map(l=>Math.max(0,Math.round((1-m[l].n/(m[l].rows*8))*100)));
+  destroyDChart("dc-cou");
+  dashCharts["dc-cou"]=new Chart(document.getElementById("dc-cou"),{type:"bar",data:{labels,datasets:[{label:"% Kepatuhan",data:pcts,backgroundColor:pcts.map(v=>v>=80?"rgba(16,185,129,.7)":v>=60?"rgba(245,158,11,.7)":"rgba(239,68,68,.7)"),borderRadius:8,borderSkipped:false}]},options:dChartOpts({suffix:"%",yOpts:{max:100}})});
+}
+
+function renderChartRisk(data){
+  const counts={"Sangat Rendah":0,"Rendah":0,"Sedang":0,"Tinggi":0};
+  data.forEach(r=>{const tk=(r["Tingkat Risiko"]||"").replace("⚠️ ",""); if(counts[tk]!==undefined)counts[tk]++;});
+  destroyDChart("dc-risk");
+  dashCharts["dc-risk"]=new Chart(document.getElementById("dc-risk"),{type:"doughnut",data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:["#10b981","#f59e0b","#f97316","#ef4444"],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#94a3b8",font:{family:"Plus Jakarta Sans",size:11}}}}}});
+}
+
+function renderChartTema(data){
+  const m={}; data.forEach(r=>{const t=(r["Tema"]||"").replace(/^\d+\. /,"").split(" ").slice(0,3).join(" "); m[t]=(m[t]||0)+(parseInt(r["Jumlah Temuan"])||0);});
+  const labels=Object.keys(m), vals=Object.values(m);
+  destroyDChart("dc-tema");
+  dashCharts["dc-tema"]=new Chart(document.getElementById("dc-tema"),{type:"bar",data:{labels,datasets:[{label:"Temuan",data:vals,backgroundColor:"rgba(139,92,246,.7)",borderRadius:6,borderSkipped:false}]},options:{...dChartOpts(),indexAxis:"y"}});
+}
+
+function renderChartTrend(data){
+  const m={}; data.forEach(r=>{const q="Q"+(r["Quartal"]||"?"); if(!m[q])m[q]={total:0,count:0}; m[q].total+=parseInt(r["Jumlah Temuan"])||0; m[q].count++;});
+  const labels=Object.keys(m).sort(), vals=labels.map(q=>m[q].count?(m[q].total/m[q].count).toFixed(1):0);
+  destroyDChart("dc-trend");
+  dashCharts["dc-trend"]=new Chart(document.getElementById("dc-trend"),{type:"line",data:{labels,datasets:[{label:"Rata-rata Temuan",data:vals,borderColor:"#3b82f6",backgroundColor:"rgba(59,130,246,.1)",borderWidth:2.5,pointBackgroundColor:"#3b82f6",pointRadius:5,fill:true,tension:.4}]},options:dChartOpts({suffix:" temuan"})});
+}
+
+function renderDashTable(data){
+  const rc={"Sangat Rendah":"rb-sr","Rendah":"rb-r","Sedang":"rb-s","Tinggi":"rb-t"};
+  document.getElementById("d-tbody").innerHTML=data.slice().reverse().slice(0,200).map(r=>{
+    const t=parseInt(r["Jumlah Temuan"])||0;
+    const pct=Math.max(0,Math.round((1-t/16)*100));
+    const risiko=(r["Tingkat Risiko"]||"-").replace("⚠️ ","");
+    const rc2=rc[risiko]||"";
+    const fillColor=pct>=80?"#10b981":pct>=60?"#f59e0b":"#ef4444";
+    let tgl="-"; try{ tgl=new Date(r["Tanggal"]).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"}); }catch(e){}
+    return `<tr>
+      <td><strong style="color:#93c5fd">${r["COU"]||"-"}</strong></td>
+      <td>${r["Penilai"]||"-"}</td>
+      <td>${tgl}</td>
+      <td style="color:#f59e0b;font-weight:700">Q${r["Quartal"]||"?"}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r["Tema"]||"-"}</td>
+      <td style="text-align:center;color:${t>0?"#ef4444":"#10b981"};font-weight:700">${t}</td>
+      <td><div class="mini-prog"><div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${fillColor}"></div></div><small style="color:var(--muted)">${pct}%</small></div></td>
+      <td><span class="rbadge ${rc2}">${risiko}</span></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("d-rowcount").innerText=`${Math.min(data.length,200)} dari ${data.length} baris`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildStepper();
+buildFormPages();
+fShowPage(0);
+
+// Auto-check session
+window.addEventListener("load", ()=>{
+  if(!sessionStorage.getItem("cou_user")) goTo("login");
+});
+</script>
+</body>
+</html>
